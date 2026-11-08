@@ -16,6 +16,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Added
 
 - Action self-test on a GitHub-hosted runner (#23).
+- Container image `ghcr.io/afkzonagroup/kerbcut`, published by the release
+  workflow after a smoke test (version, attribution, a one-page scan with all
+  capabilities dropped), with SBOM, build provenance and a GitHub attestation.
+  The GitLab template uses it.
 
 ### Changed
 
