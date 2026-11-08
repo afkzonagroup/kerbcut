@@ -6,7 +6,7 @@
 #   docker build -t kerbcut .
 #   docker run --rm --cap-drop=ALL --security-opt no-new-privileges -v "$PWD:/work" kerbcut scan https://www.example.com/ --out-html report.html
 
-FROM node:22-bookworm-slim@sha256:5ec23b7c622b00547753bc6ffd78085dd868a68aeb41c8e0a1418f033e13d96d AS build
+FROM node:26-bookworm-slim@sha256:add5c17c14752c54d2f3d519ec46a3815684d41c33f198bcb09fb998f7dcbf68 AS build
 WORKDIR /app
 COPY package.json package-lock.json .npmrc ./
 RUN npm ci --ignore-scripts --no-audit --no-fund
@@ -14,7 +14,7 @@ COPY tsconfig.json tsconfig.build.json ./
 COPY src ./src
 RUN npm run build && npm prune --omit=dev --ignore-scripts --no-audit --no-fund
 
-FROM node:22-bookworm-slim@sha256:5ec23b7c622b00547753bc6ffd78085dd868a68aeb41c8e0a1418f033e13d96d
+FROM node:26-bookworm-slim@sha256:add5c17c14752c54d2f3d519ec46a3815684d41c33f198bcb09fb998f7dcbf68
 # Chromium's sandbox needs user namespaces, which Docker's default seccomp
 # profile does not allow. In this image the container is the isolation
 # boundary: run it with --cap-drop=ALL --security-opt no-new-privileges.
