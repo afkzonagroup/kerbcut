@@ -142,7 +142,7 @@ docker run --rm --cap-drop=ALL --security-opt no-new-privileges --user "$(id -u)
   -v "$PWD:/work" ghcr.io/afkzonagroup/kerbcut:0.1.1 scan https://www.example.com/ --out-html report.html
 ```
 
-Reports are written to `/work`, the mounted directory. Images are published to `ghcr.io/afkzonagroup/kerbcut` for every release from version 0.1.1, tagged with the version (`0.1.1`) and the minor line (`0.1`), with an SBOM and build provenance. Pin a version or a digest, and verify the image before use:
+Reports are written to `/work`, the mounted directory. Images are published to `ghcr.io/afkzonagroup/kerbcut` for every release from version 0.1.1 (linux/amd64; linux/arm64 too from the next release, so 0.1.1 needs `--platform linux/amd64` on ARM machines), tagged with the version (`0.1.1`) and the minor line (`0.1`), with an SBOM and build provenance. Pin a version or a digest, and verify the image before use:
 
 ```sh
 gh attestation verify oci://ghcr.io/afkzonagroup/kerbcut:0.1.1 --owner afkzonagroup
