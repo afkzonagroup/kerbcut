@@ -71,7 +71,7 @@ describe('HTML report', () => {
   it('has no scripts, no external resources and a strict CSP with the style hash', () => {
     expect(out).not.toMatch(/<script|<link|<iframe|<img|<object|<embed/i);
     const plain = renderHtmlReport(report());
-    expect(plain).not.toMatch(/<script|<link|<[^>]*\ssrc\s*=|@import|url\(/);
+    expect(plain).not.toMatch(/<script|<link|<[^>]*\ssrc\s*=|@import|url\(/i);
     const css = /<style>([\s\S]*?)<\/style>/.exec(out)?.[1] ?? '';
     const hash = createHash('sha256').update(css, 'utf8').digest('base64');
     expect(out).toContain(`default-src &#39;none&#39;; style-src &#39;sha256-${hash}&#39;`);

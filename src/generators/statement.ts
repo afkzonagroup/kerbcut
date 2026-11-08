@@ -285,7 +285,12 @@ function renderSentence(parts: readonly SentencePart[], cfg: StatementConfig, un
   }
   flush();
   // Whitespace tidy on text parts only.
-  return out.map((x, i) => (typeof x === 'string' ? x.replace(/\s+/g, ' ').replace(i === 0 ? /^\s+/ : /$^/, '').replace(/\s+([.,;:])/g, '$1') : x));
+  // Collapse whitespace first; after that every run is a single space, so the punctuation rule is linear.
+  return out.map((x, i) => {
+    if (typeof x !== 'string') return x;
+    const collapsed = x.replace(/\s+/g, ' ');
+    return (i === 0 ? collapsed.trimStart() : collapsed).replace(/ ([.,;:])/g, '$1');
+  });
 }
 
 /**
@@ -298,7 +303,8 @@ export function scanFindingLines(scan: ScanEvidence): string[] {
     const crit = wcagCriterion(c.sc);
     const clause = en301549Clause(c.sc, scan.standards.en301549Version);
     const en = clause ? `EN 301 549 ${scan.standards.en301549Version} ${clause.clause}` : 'EN 301 549';
-    return `${en} (WCAG ${scan.standards.wcag} ${c.sc} ${crit?.title ?? ''})`.replace(/\s+\)/, ')');
+    const title = crit?.title;
+    return title === undefined || title === '' ? `${en} (WCAG ${scan.standards.wcag} ${c.sc})` : `${en} (WCAG ${scan.standards.wcag} ${c.sc} ${title})`;
   });
 }
 
