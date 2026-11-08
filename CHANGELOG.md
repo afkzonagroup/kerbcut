@@ -6,6 +6,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-11-08
+
+### Fixed
+
+- Statement generator tidies whitespace in linear time (#20).
+- Release workflow installs Chromium and allows its sandbox, as CI does (#19).
+
+### Added
+
+- Action self-test on a GitHub-hosted runner (#23).
+- Container image `ghcr.io/afkzonagroup/kerbcut`, published by the release
+  workflow after a smoke test (version, attribution, a one-page scan with all
+  capabilities dropped), with SBOM, build provenance and a GitHub attestation.
+  The GitLab template uses it.
+
+### Changed
+
+- Dependencies updated (#22); Dependabot groups minor and patch updates and ignores major versions (#18).
+- Release workflow skips versions already on npm.
+
 ## [0.1.0] - 2026-11-08
 
 ### Added

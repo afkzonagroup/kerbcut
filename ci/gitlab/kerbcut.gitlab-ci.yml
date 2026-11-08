@@ -4,7 +4,7 @@
 # GitLab CI template for Kerbcut. Include it and extend the hidden job:
 #
 #   include:
-#     - remote: 'https://raw.githubusercontent.com/afkzonagroup/kerbcut/v0.1.0/ci/gitlab/kerbcut.gitlab-ci.yml'
+#     - remote: 'https://raw.githubusercontent.com/afkzonagroup/kerbcut/v0.1.1/ci/gitlab/kerbcut.gitlab-ci.yml'
 #
 #   accessibility:
 #     extends: .kerbcut
@@ -19,7 +19,7 @@
     name: ${KERBCUT_IMAGE}
     entrypoint: [""]
   variables:
-    KERBCUT_IMAGE: "ghcr.io/afkzonagroup/kerbcut:0.1.0"
+    KERBCUT_IMAGE: "ghcr.io/afkzonagroup/kerbcut:0.1.1"
     KERBCUT_URL: ""
     KERBCUT_MAX_PAGES: "25"
     KERBCUT_MAX_DEPTH: "3"

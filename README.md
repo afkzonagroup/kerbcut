@@ -43,8 +43,6 @@ Public sector bodies have a separate law: [Directive (EU) 2016/2102](https://eur
 
 ## Quick start
 
-> **Before the first npm release:** `@afkzona/kerbcut` is published to npm from v0.2.0 ([roadmap](https://github.com/afkzonagroup/kerbcut/milestone/1)). Until then, build it from source: clone https://github.com/afkzonagroup/kerbcut, run `npm ci && npm run build && npm pack`, and install the resulting `.tgz` file wherever the steps below install `@afkzona/kerbcut`.
-
 You need Node.js 22 or later.
 
 ```sh
@@ -126,7 +124,7 @@ jobs:
   scan:
     runs-on: ubuntu-latest
     steps:
-      - uses: afkzonagroup/kerbcut@v0.1.0 # pin to a commit SHA in real use
+      - uses: afkzonagroup/kerbcut@v0.1.1 # pin to a commit SHA in real use
         with:
           url: https://www.example.com/
           max-pages: '25'
@@ -140,12 +138,17 @@ Inputs: `url` (required), `max-pages`, `max-depth`, `timeout`, `fail-on`, `respe
 The image runs as an unprivileged user and contains Playwright's headless Chromium.
 
 ```sh
-docker build -t kerbcut .
 docker run --rm --cap-drop=ALL --security-opt no-new-privileges --user "$(id -u):$(id -g)" \
-  -v "$PWD:/work" kerbcut scan https://www.example.com/ --out-html report.html
+  -v "$PWD:/work" ghcr.io/afkzonagroup/kerbcut:0.1.1 scan https://www.example.com/ --out-html report.html
 ```
 
-Reports are written to `/work`, the mounted directory. The image is not published yet; build it from this repository.
+Reports are written to `/work`, the mounted directory. Images are published to `ghcr.io/afkzonagroup/kerbcut` for every release from version 0.1.1, tagged with the version (`0.1.1`) and the minor line (`0.1`), with an SBOM and build provenance. Pin a version or a digest, and verify the image before use:
+
+```sh
+gh attestation verify oci://ghcr.io/afkzonagroup/kerbcut:0.1.1 --owner afkzonagroup
+```
+
+To build it yourself: `docker build -t kerbcut .`
 
 Docker's default seccomp profile does not allow the user namespaces that Chromium's sandbox needs, so the image sets `KERBCUT_BROWSER_SANDBOX=off` and the container is the isolation boundary. Keep `--cap-drop=ALL` and `--security-opt no-new-privileges`. To use Chromium's sandbox as well, run with a seccomp profile that allows user namespaces and `-e KERBCUT_BROWSER_SANDBOX=on`.
 
@@ -153,7 +156,7 @@ Docker's default seccomp profile does not allow the user namespaces that Chromiu
 
 ```yaml
 include:
-  - remote: 'https://raw.githubusercontent.com/afkzonagroup/kerbcut/v0.1.0/ci/gitlab/kerbcut.gitlab-ci.yml'
+  - remote: 'https://raw.githubusercontent.com/afkzonagroup/kerbcut/v0.1.1/ci/gitlab/kerbcut.gitlab-ci.yml'
 
 accessibility:
   extends: .kerbcut
