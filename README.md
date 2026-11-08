@@ -43,6 +43,8 @@ Public sector bodies have a separate law: [Directive (EU) 2016/2102](https://eur
 
 ## Quick start
 
+> **Before the first npm release:** `@afkzona/kerbcut` is published to npm from v0.2.0 ([roadmap](https://github.com/afkzonagroup/kerbcut/milestone/1)). Until then, build it from source: clone https://github.com/afkzonagroup/kerbcut, run `npm ci && npm run build && npm pack`, and install the resulting `.tgz` file wherever the steps below install `@afkzona/kerbcut`.
+
 You need Node.js 22 or later.
 
 ```sh
