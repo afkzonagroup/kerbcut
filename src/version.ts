@@ -5,7 +5,7 @@
 export const TOOL_NAME = 'Kerbcut';
 
 /** Version of this package. Kept in sync with package.json by a test. */
-export const TOOL_VERSION = '0.1.0';
+export const TOOL_VERSION = '0.1.1';
 
 /** Project home page, used in the User-Agent and the report footer. */
 export const TOOL_URL = 'https://github.com/afkzonagroup/kerbcut';

@@ -1,6 +1,6 @@
 {
   "name": "@afkzona/kerbcut",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Accessibility scanner and documentation generator for the European Accessibility Act (Directive (EU) 2019/882): axe-core scan mapped to WCAG 2.1 and EN 301 549 clause 9, Annex V service information, and the Implementing Decision (EU) 2018/1523 model accessibility statement.",
   "license": "AGPL-3.0-only",
   "author": "MB AFKzona Group",
