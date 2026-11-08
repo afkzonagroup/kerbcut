@@ -49,7 +49,9 @@ export async function startServer(routes: Record<string, Handler>): Promise<Test
   const server: Server = createServer((req, res) => {
     seen.push({ method: req.method ?? '', url: req.url ?? '', headers: req.headers });
     const key = `${req.method ?? 'GET'} ${req.url ?? '/'}`;
-    const handler = routes[key] ?? routes[req.url ?? '/'];
+    // Own properties only: a request path such as "/constructor" must not reach Object.prototype.
+    const pick = (k: string): Handler | undefined => (Object.hasOwn(routes, k) ? routes[k] : undefined);
+    const handler = pick(key) ?? pick(req.url ?? '/');
     if (handler) {
       handler(req, res);
       return;
