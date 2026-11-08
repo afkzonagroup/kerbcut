@@ -18,9 +18,7 @@ Some organisations cannot accept these obligations, for example when Kerbcut bec
 - white-label reports, without the attribution;
 - warranty and indemnity options;
 - priority support;
-- access to the Enterprise features: hosted dashboard, continuous multi-site monitoring, SSO/SAML, roles, audit evidence packs, legal-update feed and support with an SLA.
-
-The Enterprise features are not in this repository.
+- **Services:** integration into your systems, custom connectors and features, and support agreements, quoted per project.
 
 ## Contact
 

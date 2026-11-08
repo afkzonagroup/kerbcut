@@ -392,17 +392,7 @@ A commercial licence is available for organisations that cannot accept the AGPL 
 
 ### Enterprise
 
-AFKzona Group offers, separately from this repository:
-
-- a hosted dashboard,
-- continuous monitoring of many sites,
-- SSO/SAML and roles,
-- audit evidence packs,
-- a legal-update feed,
-- white-label reports,
-- support with an SLA.
-
-These are not part of the open source code. Contact info@afkzonagroup.lt.
+MB AFKzona Group offers a commercial licence for organisations that cannot use the AGPL-3.0 terms (including white-label use without the attribution notice), integration into your systems, custom connectors and features, and support agreements. Contact info@afkzonagroup.lt.
 
 "Kerbcut" is a trademark of AFKzona Group. See [TRADEMARKS.md](TRADEMARKS.md).
 
