@@ -1,0 +1,9 @@
+node_modules/
+dist/
+dist-check/
+coverage/
+*.log
+.DS_Store
+/reports/
+/tmp/
+*.tgz

@@ -1,0 +1,113 @@
+# Copyright 2026 MB AFKzona Group
+# SPDX-License-Identifier: AGPL-3.0-only
+name: Kerbcut accessibility scan
+description: Scan a website with axe-core, mapped to WCAG 2.1 A/AA and EN 301 549 clause 9, and keep the JSON and HTML reports.
+author: AFKzona Group
+branding:
+  icon: eye
+  color: blue
+inputs:
+  url:
+    description: Start URL (http or https). Only pages with the same origin are scanned.
+    required: true
+  max-pages:
+    description: Pages to scan at most (1-1000).
+    default: '25'
+  max-depth:
+    description: Link depth from the start URL (0-20).
+    default: '3'
+  timeout:
+    description: Time for the whole scan in seconds (1-3600).
+    default: '300'
+  fail-on:
+    description: Fail the step on "violations", on "serious" (serious or critical) or on "none".
+    default: 'violations'
+  respect-robots:
+    description: Respect robots.txt ("true" or "false").
+    default: 'true'
+  wcag22:
+    description: Also run WCAG 2.2 A/AA rules ("true" or "false").
+    default: 'false'
+  report-dir:
+    description: Directory for report.json and report.html, inside the workspace.
+    default: 'kerbcut-report'
+  upload-artifact:
+    description: Upload the report directory as a workflow artifact ("true" or "false").
+    default: 'true'
+  browser-sandbox:
+    description: Run Chromium with its sandbox ("true" or "false"). On GitHub-hosted Ubuntu runners the action allows unprivileged user namespaces for the job so the sandbox can start.
+    default: 'true'
+outputs:
+  violations:
+    description: Number of rule failures found.
+    value: ${{ steps.scan.outputs.violations }}
+  report-json:
+    description: Path of the JSON report.
+    value: ${{ steps.scan.outputs.report-json }}
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      with:
+        node-version: '22'
+    - name: Install Kerbcut and Chromium
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      run: |
+        set -euo pipefail
+        npm ci --ignore-scripts --no-audit --no-fund
+        npm run build
+        node node_modules/playwright-core/cli.js install --with-deps chromium-headless-shell
+    - name: Allow the Chromium sandbox
+      if: runner.os == 'Linux' && inputs.browser-sandbox == 'true'
+      shell: bash
+      run: |
+        set -euo pipefail
+        f=/proc/sys/kernel/apparmor_restrict_unprivileged_userns
+        if [ -r "$f" ] && [ "$(cat "$f")" = "1" ]; then
+          if [ "${RUNNER_ENVIRONMENT:-}" = "github-hosted" ]; then
+            sudo -n sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+          else
+            echo "::error::AppArmor blocks the Chromium sandbox on this runner. Allow unprivileged user namespaces, or set browser-sandbox: false if the runner is disposable."
+            exit 2
+          fi
+        fi
+    - name: Scan
+      id: scan
+      shell: bash
+      # Inputs reach the script only through environment variables and are
+      # passed as separate arguments, so they cannot inject shell code.
+      env:
+        KERBCUT_URL: ${{ inputs.url }}
+        KERBCUT_MAX_PAGES: ${{ inputs.max-pages }}
+        KERBCUT_MAX_DEPTH: ${{ inputs.max-depth }}
+        KERBCUT_TIMEOUT: ${{ inputs.timeout }}
+        KERBCUT_FAIL_ON: ${{ inputs.fail-on }}
+        KERBCUT_RESPECT_ROBOTS: ${{ inputs.respect-robots }}
+        KERBCUT_WCAG22: ${{ inputs.wcag22 }}
+        KERBCUT_REPORT_DIR: ${{ inputs.report-dir }}
+        KERBCUT_SANDBOX_INPUT: ${{ inputs.browser-sandbox }}
+      run: |
+        set -euo pipefail
+        case "$KERBCUT_REPORT_DIR" in *$'\n'* | *$'\r'*) echo "report-dir must be a single line" >&2; exit 2 ;; esac
+        args=(scan "$KERBCUT_URL" --max-pages "$KERBCUT_MAX_PAGES" --max-depth "$KERBCUT_MAX_DEPTH" --timeout "$KERBCUT_TIMEOUT" --fail-on "$KERBCUT_FAIL_ON" --out-json "$KERBCUT_REPORT_DIR/report.json" --out-html "$KERBCUT_REPORT_DIR/report.html")
+        if [ "$KERBCUT_RESPECT_ROBOTS" = "false" ]; then args+=(--ignore-robots); fi
+        if [ "$KERBCUT_WCAG22" = "true" ]; then args+=(--wcag22); fi
+        if [ "$KERBCUT_SANDBOX_INPUT" = "false" ]; then args+=(--no-browser-sandbox); fi
+        code=0
+        node "$GITHUB_ACTION_PATH/dist/cli/main.js" "${args[@]}" || code=$?
+        # Outputs only for a report written by this run (exit 0 or 1), and
+        # only a plain number, so nothing else can reach $GITHUB_OUTPUT.
+        if { [ "$code" = "0" ] || [ "$code" = "1" ]; } && [ -f "$KERBCUT_REPORT_DIR/report.json" ]; then
+          violations=$(node -e 'const r=JSON.parse(require("fs").readFileSync(process.argv[1],"utf8"));const n=r.summary.violations.findings;if(!Number.isSafeInteger(n)||n<0)process.exit(1);process.stdout.write(String(n))' "$KERBCUT_REPORT_DIR/report.json")
+          echo "violations=$violations" >> "$GITHUB_OUTPUT"
+          echo "report-json=$KERBCUT_REPORT_DIR/report.json" >> "$GITHUB_OUTPUT"
+        fi
+        exit "$code"
+    - name: Upload report
+      if: always() && inputs.upload-artifact == 'true'
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+      with:
+        name: kerbcut-report
+        path: ${{ inputs.report-dir }}
+        if-no-files-found: ignore

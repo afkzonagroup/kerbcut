@@ -1,0 +1,25 @@
+Kerbcut
+Copyright 2026 MB AFKzona Group
+
+This product is licensed under AGPL-3.0-only with an additional term under
+section 7(b); see LICENSE and LICENSE-ADDITIONAL-TERMS.md.
+
+Third-party software (runtime dependencies, not included in this repository):
+- axe-core 4.14.0, Copyright (c) Deque Systems, Inc. Mozilla Public License 2.0.
+  https://github.com/dequelabs/axe-core
+- playwright-core 1.64.1, Copyright (c) Microsoft Corporation. Apache License 2.0.
+  https://github.com/microsoft/playwright
+
+Data included in src/data/:
+- Texts of Directive (EU) 2019/882 and Commission Implementing Decision
+  (EU) 2018/1523, (c) European Union, https://eur-lex.europa.eu/, 1998-2026.
+  Reused under Commission Decision 2011/833/EU on the reuse of Commission
+  documents. Only European Union legal documents published in the Official
+  Journal of the European Union are deemed authentic.
+- WCAG 2.1 and WCAG 2.2 success criterion numbers, titles and levels,
+  Copyright (c) World Wide Web Consortium. https://www.w3.org/TR/WCAG21/ and
+  https://www.w3.org/TR/WCAG22/, used under the W3C Document License.
+- EN 301 549 clause numbers and headings (clause 9) from EN 301 549 V3.2.1
+  and V4.1.1, (c) ETSI, CEN, CENELEC. Only numbers and headings are
+  reproduced, for cross-referencing. The standards are available from
+  https://www.etsi.org/.

@@ -1,0 +1,35 @@
+# Copyright 2026 MB AFKzona Group
+# SPDX-License-Identifier: AGPL-3.0-only
+#
+# GitLab CI template for Kerbcut. Include it and extend the hidden job:
+#
+#   include:
+#     - remote: 'https://raw.githubusercontent.com/afkzonagroup/kerbcut/v0.1.0/ci/gitlab/kerbcut.gitlab-ci.yml'
+#
+#   accessibility:
+#     extends: .kerbcut
+#     variables:
+#       KERBCUT_URL: "https://www.example.com/"
+#
+# The job uses the Kerbcut Docker image (see Dockerfile). Until the image is
+# published, build it yourself and set KERBCUT_IMAGE.
+
+.kerbcut:
+  image:
+    name: ${KERBCUT_IMAGE}
+    entrypoint: [""]
+  variables:
+    KERBCUT_IMAGE: "ghcr.io/afkzonagroup/kerbcut:0.1.0"
+    KERBCUT_URL: ""
+    KERBCUT_MAX_PAGES: "25"
+    KERBCUT_MAX_DEPTH: "3"
+    KERBCUT_TIMEOUT: "300"
+    KERBCUT_FAIL_ON: "violations"
+    KERBCUT_REPORT_DIR: "kerbcut-report"
+  script:
+    - node /app/dist/cli/main.js scan "$KERBCUT_URL" --max-pages "$KERBCUT_MAX_PAGES" --max-depth "$KERBCUT_MAX_DEPTH" --timeout "$KERBCUT_TIMEOUT" --fail-on "$KERBCUT_FAIL_ON" --out-json "$KERBCUT_REPORT_DIR/report.json" --out-html "$KERBCUT_REPORT_DIR/report.html"
+  artifacts:
+    when: always
+    expire_in: 30 days
+    paths:
+      - $KERBCUT_REPORT_DIR/

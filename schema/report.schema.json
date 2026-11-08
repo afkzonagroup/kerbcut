@@ -1,0 +1,544 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/afkzonagroup/kerbcut/schema/report.schema.json",
+  "title": "Kerbcut scan report",
+  "description": "JSON report written by Kerbcut. Versioned with semantic versioning in schemaVersion: minor versions only add optional fields; major versions may remove or change fields.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "tool",
+    "scan",
+    "standards",
+    "disclaimer",
+    "summary",
+    "siteChecks",
+    "pages",
+    "skipped"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "version",
+        "url",
+        "axeCoreVersion",
+        "browser"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "axeCoreVersion": {
+          "type": "string"
+        },
+        "browser": {
+          "type": "string"
+        }
+      }
+    },
+    "scan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "startUrl",
+        "startedAt",
+        "finishedAt",
+        "durationMs",
+        "respectRobotsTxt",
+        "limits",
+        "axeTags"
+      ],
+      "properties": {
+        "startUrl": {
+          "type": "string"
+        },
+        "startedAt": {
+          "type": "string"
+        },
+        "finishedAt": {
+          "type": "string"
+        },
+        "durationMs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "respectRobotsTxt": {
+          "type": "boolean"
+        },
+        "limits": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer"
+          }
+        },
+        "axeTags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "stoppedEarly": {
+          "type": "string"
+        }
+      }
+    },
+    "standards": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "wcag",
+        "levels",
+        "en301549Version",
+        "en301549Status"
+      ],
+      "properties": {
+        "wcag": {
+          "enum": [
+            "2.1",
+            "2.2"
+          ]
+        },
+        "levels": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "A",
+              "AA"
+            ]
+          }
+        },
+        "en301549Version": {
+          "enum": [
+            "V3.2.1",
+            "V4.1.1"
+          ]
+        },
+        "en301549Status": {
+          "type": "string"
+        }
+      }
+    },
+    "disclaimer": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pagesScanned",
+        "pagesWithErrors",
+        "urlsSkipped",
+        "violations",
+        "needsReview",
+        "byImpact",
+        "byPrinciple",
+        "byCriterion"
+      ],
+      "properties": {
+        "pagesScanned": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pagesWithErrors": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "urlsSkipped": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "violations": {
+          "$ref": "#/$defs/counts"
+        },
+        "needsReview": {
+          "$ref": "#/$defs/counts"
+        },
+        "byImpact": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "minor",
+            "moderate",
+            "serious",
+            "critical"
+          ],
+          "properties": {
+            "minor": {
+              "$ref": "#/$defs/counts"
+            },
+            "moderate": {
+              "$ref": "#/$defs/counts"
+            },
+            "serious": {
+              "$ref": "#/$defs/counts"
+            },
+            "critical": {
+              "$ref": "#/$defs/counts"
+            }
+          }
+        },
+        "byPrinciple": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "perceivable",
+            "operable",
+            "understandable",
+            "robust"
+          ],
+          "properties": {
+            "perceivable": {
+              "$ref": "#/$defs/counts"
+            },
+            "operable": {
+              "$ref": "#/$defs/counts"
+            },
+            "understandable": {
+              "$ref": "#/$defs/counts"
+            },
+            "robust": {
+              "$ref": "#/$defs/counts"
+            }
+          }
+        },
+        "byCriterion": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "sc",
+              "title",
+              "level",
+              "principle",
+              "findings",
+              "nodes",
+              "pages"
+            ],
+            "properties": {
+              "sc": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "level": {
+                "enum": [
+                  "A",
+                  "AA"
+                ]
+              },
+              "principle": {
+                "enum": [
+                  "perceivable",
+                  "operable",
+                  "understandable",
+                  "robust"
+                ]
+              },
+              "en301549": {
+                "type": "string"
+              },
+              "findings": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "nodes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "pages": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    "siteChecks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "outcome",
+          "heuristic",
+          "detail",
+          "links"
+        ],
+        "properties": {
+          "id": {
+            "const": "accessibility-information-link"
+          },
+          "outcome": {
+            "enum": [
+              "found",
+              "not-found"
+            ]
+          },
+          "heuristic": {
+            "const": true
+          },
+          "detail": {
+            "type": "string"
+          },
+          "links": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "pages": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/page"
+      }
+    },
+    "skipped": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "url",
+          "reason"
+        ],
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "reason": {
+            "enum": [
+              "robots",
+              "limit-pages",
+              "limit-time",
+              "limit-depth",
+              "not-html",
+              "other-origin",
+              "blocked",
+              "error"
+            ]
+          },
+          "detail": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "findings",
+        "nodes"
+      ],
+      "properties": {
+        "findings": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "nodes": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "nodeRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target",
+        "html"
+      ],
+      "properties": {
+        "target": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "html": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ruleId",
+        "source",
+        "help",
+        "wcag",
+        "en301549",
+        "heuristic",
+        "nodeCount",
+        "nodes"
+      ],
+      "properties": {
+        "ruleId": {
+          "type": "string"
+        },
+        "source": {
+          "enum": [
+            "axe",
+            "kerbcut"
+          ]
+        },
+        "impact": {
+          "enum": [
+            "minor",
+            "moderate",
+            "serious",
+            "critical"
+          ]
+        },
+        "help": {
+          "type": "string"
+        },
+        "helpUrl": {
+          "type": "string"
+        },
+        "wcag": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^\\d\\.\\d{1,2}\\.\\d{1,2}$"
+          }
+        },
+        "en301549": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^9\\.\\d\\.\\d{1,2}\\.\\d{1,2}$"
+          }
+        },
+        "heuristic": {
+          "type": "boolean"
+        },
+        "nodeCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nodeRef"
+          }
+        }
+      }
+    },
+    "page": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "url",
+        "finalUrl",
+        "depth",
+        "violations",
+        "needsReview",
+        "passedRules",
+        "inapplicableRules",
+        "accessibilityInfoLinks",
+        "blockedRequests"
+      ],
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "finalUrl": {
+          "type": "string"
+        },
+        "depth": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "status": {
+          "type": "integer"
+        },
+        "title": {
+          "type": "string"
+        },
+        "lang": {
+          "type": "string"
+        },
+        "error": {
+          "type": "string"
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "violations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/finding"
+          }
+        },
+        "needsReview": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/finding"
+          }
+        },
+        "passedRules": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inapplicableRules": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "accessibilityInfoLinks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "blockedRequests": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "url",
+              "reason"
+            ],
+            "properties": {
+              "url": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "name": "@afkzona/kerbcut",
+  "version": "0.1.0",
+  "description": "Accessibility scanner and documentation generator for the European Accessibility Act (Directive (EU) 2019/882): axe-core scan mapped to WCAG 2.1 and EN 301 549 clause 9, Annex V service information, and the Implementing Decision (EU) 2018/1523 model accessibility statement.",
+  "license": "AGPL-3.0-only",
+  "author": "MB AFKzona Group",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/afkzonagroup/kerbcut.git"
+  },
+  "homepage": "https://github.com/afkzonagroup/kerbcut#readme",
+  "bugs": {
+    "url": "https://github.com/afkzonagroup/kerbcut/issues"
+  },
+  "keywords": [
+    "accessibility",
+    "a11y",
+    "european-accessibility-act",
+    "eaa",
+    "wcag",
+    "en-301-549",
+    "axe-core",
+    "playwright",
+    "accessibility-statement"
+  ],
+  "bin": {
+    "kerbcut": "dist/cli/main.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./playwright": {
+      "types": "./dist/playwright/index.d.ts",
+      "import": "./dist/playwright/index.js"
+    },
+    "./package.json": "./package.json",
+    "./schema/report.schema.json": "./schema/report.schema.json"
+  },
+  "files": [
+    "dist/",
+    "schema/",
+    "LICENSE",
+    "LICENSE-ADDITIONAL-TERMS.md",
+    "NOTICE",
+    "README.md",
+    "CHANGELOG.md",
+    "SECURITY.md",
+    "TRADEMARKS.md",
+    "COMMERCIAL.md"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run --coverage",
+    "check": "npm run typecheck && npm run lint && npm run test",
+    "browsers": "playwright-core install chromium-headless-shell"
+  },
+  "dependencies": {
+    "axe-core": "4.14.0",
+    "playwright-core": "1.64.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@types/node": "22.20.5",
+    "@vitest/coverage-v8": "5.0.5",
+    "eslint": "10.13.0",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.72.0",
+    "vitest": "5.0.5"
+  }
+}
