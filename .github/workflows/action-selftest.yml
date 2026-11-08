@@ -1,0 +1,37 @@
+name: Action self-test
+
+# Runs the composite action from this repository on a GitHub-hosted runner against
+# https://example.com (one page). Pull requests and manual runs only.
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  selftest:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - id: scan
+        uses: ./
+        with:
+          url: https://example.com/
+          max-pages: '1'
+          max-depth: '0'
+          fail-on: none
+          upload-artifact: 'false'
+          report-dir: kerbcut-report
+      - name: Check the outputs and reports
+        env:
+          VIOLATIONS: ${{ steps.scan.outputs.violations }}
+          REPORT_JSON: ${{ steps.scan.outputs.report-json }}
+        run: |
+          set -euo pipefail
+          [[ "$VIOLATIONS" =~ ^[0-9]+$ ]] || { echo "violations is not a number: $VIOLATIONS"; exit 1; }
+          test -s "$REPORT_JSON"
+          test -s kerbcut-report/report.html
+          echo "Action self-test passed: $VIOLATIONS violations"
